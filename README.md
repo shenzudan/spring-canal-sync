@@ -1,10 +1,9 @@
-### 写在前面
-东西是从一个依赖canal同步mysql到es的服务里拿出来的
-用的时候canal刚推出同步es的方案，但是那个sql写复杂了就出问题(我的问题)
-那就直接监听binlog看表数据变动就好了，如果相关文档依赖的数据变动就更新这个文档为最新数据
+## 写在前面
+东西是从一个依赖canal同步mysql到es的服务里拿出来的  
+用的时候canal刚推出同步es的方案，但是那个sql写复杂了就出问题(我的问题)  
+那就直接监听binlog看表数据变动就好了，如果相关文档依赖的数据变动就更新这个文档为最新数据  
 
-### 使用
-
+## 使用
 #### 启动
 ```
 @EnableSyncListener
@@ -19,7 +18,7 @@ public class XXApplication {  }
 public class BookInfoIndexSyncTrigger {
     @SyncListener(table = {"book_info"}, type = EventType.UPDATE)
     public void updateBookInfo(long bookId) {
-        logger.info("更新同步brs_book_info..." + bookId);
+        logger.info("更新同步book_info..." + bookId);
         syncService.syncBookInfoIndexById(bookId);
     }
 }
@@ -37,7 +36,7 @@ public class BookBaseInfoIndexSyncTrigger {
 }
 ```
 
-### 配置
+## 配置
   - 是否连接canal，开启数据同步，默认true(因为canal客户端指定了clientId，所以连到同一集群的服务只有一个能fetch消息，但是有些是非主要的或者不用来做更新的机器，特别像扩容时候，可以关掉canal客户端)
   ```
   canal:
@@ -57,7 +56,7 @@ public class BookBaseInfoIndexSyncTrigger {
   ```
 
 
-### 相关
+## 相关
 - 开启数据库binlog
 ```properties
 [mysqld]
@@ -73,6 +72,6 @@ server_id=1 # 配置 MySQL replaction 需要定义，不要和 canal 的 slaveId
   - 阿里云配置 https://github.com/alibaba/canal/wiki/aliyun-RDS-QuickStart
   - 实例监控binlog过滤表
 
-  ```
-  canal.instance.filter.regex=test_lib\\..*
-  ```
+```
+    canal.instance.filter.regex=test_lib\\..*
+```
